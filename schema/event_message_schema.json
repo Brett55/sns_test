@@ -1,0 +1,94 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "id": "urn:jsonschema:com:digitalglobe:events:EventMessage",
+    "properties": {
+        "event_id": {
+            "type": "string",
+            "minLength": 1
+        },
+        "user_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "account_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "timestamp": {
+            "type": "string",
+            "minLength": 1
+        },
+        "event_type": {
+            "enum": [
+                "workflow_submitted",
+                "task_state_changed"
+            ]
+        },
+        "source": {
+            "type": "string",
+            "minLength": 1
+        },
+        "properties": {
+            "type": "object",
+            "oneOf": [
+                { "$ref": "#/definitions/WorkflowEvent" },
+                { "$ref": "#/definitions/TaskEvent" },
+                { "$ref": "#/definitions/OrderingEvent" },
+                { "$ref": "#/definitions/ProductCatalogerEvent" },
+                { "$ref": "#/definitions/AcquisitionCatalogerEvent" }
+            ]
+        }
+    },
+    "definitions": {
+        "WorkflowEvent": {
+            "type": "object",
+            "properties": {
+                "workflow_id": { "type": "string" },
+                "workflow_name":  { "type": "string" }
+            },
+            "required": [
+                "workflow_id",
+                "workflow_name"
+            ]
+        },
+        "TaskEvent": {
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/definitions/WorkflowEvent" },
+                {
+                    "properties": {
+                        "task_id": { "type": "string" },
+                        "task_name": { "type": "string" },
+                        "task_type": { "type": "string" },
+                        "docker_image": { "type": "string" },
+                        "task_domain": { "type": "string" },
+                        "instance_id": { "type": "string" },
+                        "instance_size": { "type": "string" }
+                    },
+                    "required": [
+                        "task_id",
+                        "task_name",
+                        "task_type",
+                        "docker_image"
+                    ]
+                }
+            ]
+        },
+        "OrderingEvent": {},
+        "ProductCatalogerEvent": {},
+        "AcquisitionCatalogerEvent": {}
+    },
+    "required": [
+        "event_id",
+        "user_id",
+        "account_id",
+        "timestamp",
+        "event_type",
+        "source",
+        "properties"
+    ],
+    "additionalProperties": false
+}
